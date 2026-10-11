@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Bestie! 🎉</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f7f9fc; color: #333; line-height: 1.6; padding-bottom: 50px; }
+    header { background: linear-gradient(135deg, #6c5ce7, #a29bfe); color: white; text-align: center; padding: 60px 20px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    h1 { font-size: 2.8rem; margin-bottom: 10px; }
+    .subtitle { font-size: 1.2rem; opacity: 0.9; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .card { background: white; border-radius: 15px; padding: 25px; margin-top: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .card h2 { color: #6c5ce7; margin-bottom: 15px; font-size: 1.5rem; }
+    .stat-box { display: flex; justify-content: space-around; text-align: center; margin: 20px 0; }
+    .stat-item { background: #f0edff; padding: 15px; border-radius: 10px; flex: 1; margin: 0 5px; }
+    .stat-number { font-size: 1.8rem; font-weight: bold; color: #6c5ce7; }
+    .btn { background: #6c5ce7; color: white; border: none; padding: 12px 20px; font-size: 1rem; border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: bold; }
+    .btn:hover { background: #5b4bc4; transform: translateY(-2px); }
+    .btn:disabled { background: #b2bec3; cursor: not-allowed; transform: none; }
+
+    .slider-container { margin: 20px 0; }
+    input[type=range] { width: 100%; margin: 10px 0; }
+
+    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+    .polaroid { background: white; padding: 10px 10px 20px 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid #ddd; text-align: center; transform: rotate(-2deg); transition: 0.3s; }
+    .polaroid:nth-child(even) { transform: rotate(2deg); }
+    .polaroid:hover { transform: scale(1.05) rotate(0deg); z-index: 2; }
+    .polaroid img { width: 100%; height: 180px; object-fit: cover; border-radius: 5px; }
+    .caption { margin-top: 10px; font-weight: 500; font-size: 0.9rem; color: #555; }
+
+    .contract-list { list-style: none; text-align: left; margin: 15px 0; }
+    .contract-list li { padding: 8px 0; border-bottom: 1px dashed #eee; display: flex; align-items: center; }
+    .contract-list input { margin-right: 10px; width: 18px; height: 18px; }
+
+    .cake-container { text-align: center; cursor: pointer; margin: 20px 0; }
+    .cake-emoji { font-size: 80px; display: inline-block; transition: transform 0.3s; }
+    .cake-emoji:hover { transform: scale(1.1); }
+    .hidden-wish { display: none; background: #ffeaa7; padding: 20px; border-radius: 10px; margin-top: 15px; font-weight: 500; border-left: 5px solid #fdcb6e; }
+    /* ===== Cute Bestie Password Cover ===== */
+.bestie-lock {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+  background:
+    radial-gradient(circle at 10% 15%, #ffe0ed 0, transparent 35%),
+    radial-gradient(circle at 90% 85%, #e5ddff 0, transparent 35%),
+    linear-gradient(135deg, #fff5fa, #f2efff);
+}
+
+.lock-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 35px 25px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.94);
+  border: 2px solid #ffd6e7;
+  border-radius: 28px;
+  box-shadow: 0 18px 55px rgba(108, 92, 231, 0.16);
+  animation: bestiePop 0.65s ease both;
+}
+
+.lock-hearts {
+  font-size: 25px;
+  margin-bottom: 8px;
+}
+
+.lock-cake {
+  font-size: 66px;
+  margin: 5px 0 12px;
+  animation: cakeBounce 1.8s ease-in-out infinite;
+}
+
+.lock-card h1 {
+  color: #6c5ce7;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.lock-subtitle {
+  color: #77708a;
+  margin-bottom: 18px;
+}
+
+.lock-divider {
+  color: #ed83b0;
+  margin: 18px 0 22px;
+}
+
+#bestiePasswordForm label {
+  display: block;
+  color: #51476d;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+#bestiePassword {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #e7dcff;
+  border-radius: 12px;
+  outline: none;
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 14px;
+  background: #fffaff;
+}
+
+#bestiePassword:focus {
+  border-color: #a29bfe;
+  box-shadow: 0 0 0 3px rgba(162, 155, 254, 0.18);
+}
+
+.unlock-btn {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: white;
+  background: linear-gradient(135deg, #6c5ce7, #ed83b0);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.unlock-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.25);
+}
+
+#bestiePasswordError {
+  min-height: 24px;
+  margin-top: 12px;
+  color: #d63031;
+  font-size: 14px;
+}
+
+.lock-footer {
+  color: #a08cae;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.bestie-lock.unlocking {
+  animation: lockFade 0.45s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes bestiePop {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes cakeBounce {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-6px) rotate(3deg); }
+}
+
+@keyframes lockFade {
+  to { opacity: 0; visibility: hidden; }
+}
+
+@media (max-width: 480px) {
+  .lock-card { padding: 28px 20px; }
+  .lock-card h1 { font-size: 1.7rem; }
+}
+/* ===== End Password Cover CSS ===== */
+  </style>
+</head>
+<body>
+    <!-- Cute Bestie Password Cover -->
+<div id="bestieLock" class="bestie-lock">
+  <div class="lock-card">
+    <div class="lock-hearts">💗 🎀 💗</div>
+    <div class="lock-cake">🎂</div>
+
+    <h1>Hey, Bestie! 💕</h1>
+    <p class="lock-subtitle">A little birthday surprise is waiting for you!</p>
+<div class="lock-photos">
+  <img src="lock1.jpg" alt="">
+  <img src="lock2.jpg" alt="">
+  <img src="lock3.jpg" alt="">
+  <img src="lock4.jpg" alt="">
+</div>
+    <div class="lock-divider">✧･ﾟ: *✧･ﾟ:*</div>
+
+    <form id="bestiePasswordForm">
+    <label for="bestiePassword">Only besties can enter 🔐</label>
+
+      <input
+        id="bestiePassword"
+        type="password"
+        placeholder="Enter your secret password"
+        autocomplete="on"
+        required
+      />
+
+      <button type="submit" class="unlock-btn">
+        Unlock My Surprise 💖
+      </button>
+
+      <p id="bestiePasswordError" role="alert" aria-live="polite"></p>
+    </form>
+
+    <p class="lock-footer">Made with 💗 just for you</p>
+  </div>
+</div>
+<!-- End Cute Bestie Password Cover -->
+
+  <header>
+    <h1>Happy Birthday, Partner in Crime! 🎂</h1>
+    <p class="subtitle">Official Website for my favorite & most annoying Female Bestie!</p>
+  </header>
+
+  <div class="container">
+
+    <!-- Stats -->
+    <div class="card">
+      <h2>📊 Friendship Stats</h2>
+      <div class="stat-box">
+        <div class="stat-item">
+          <div class="stat-number">365+</div>
+          <div>Days Tolerated</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">999+</div>
+          <div>Secrets Safe</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div>Pagalpanti</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annoying Meter -->
+    <div class="card">
+      <h2>🤪 How Annoying Are You Today?</h2>
+      <p>Move the slider to check your chaos level:</p>
+      <div class="slider-container">
+        <input type="range" id="annoySlider" min="0" max="100" value="50" oninput="updateMeter()">
+        <p id="meterResult" style="font-weight: bold; margin-top: 10px; color: #e17055;">Status: Moderately Drama Queen (50%)</p>
+      </div>
+      <button class="btn" onclick="generateFact()">Get Random Funny Fact</button>
+      <p id="factBox" style="margin-top: 15px; font-style: italic; color: #636e72;"></p>
+    </div>
+
+    <!-- Photos -->
+    <div class="card">
+      <h2>📸 Hall of Memories</h2>
+      <p>Some iconic moments we somehow survived:</p>
+      <div class="gallery">
+
+        <div class="polaroid">
+          <img src="pic1.jpg" alt="Photo 1" onerror="this.src='https://via.placeholder.com/200x180/a29bfe/ffffff?text=Add+pic1'">
+          <div class="caption">The "Overthinking" Face 🤦‍♀️</div>
+        </div>
+
+        <div class="polaroid">
+          <img src="pic2.jpg" alt="Photo 2" onerror="this.src='https://via.placeholder.com/200x180/74b9ff/ffffff?text=Add+pic2'">
+          <div class="caption">Late Night Food Partner 🍕</div>
+        </div>
+
+        <div class="polaroid">
+          <img src="pic3.jpg" alt="Photo 3" onerror="this.src='https://via.placeholder.com/200x180/fab1a0/ffffff?text=Add+pic3'">
+          <div class="caption">Always Ready For Gossip 🤫</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Friendship Contract -->
+    <div class="card">
+      <h2>📜 The Mandatory Friendship Contract</h2>
+      <p>Check all boxes to unlock your Birthday Certificate:</p>
+      <ul class="contract-list">
+        <li><input type="checkbox" class="agree-check" onchange="checkContract()"> Will listen to my boring rants without judgment.</li>
+        <li><input type="checkbox" class="agree-check" onchange="checkContract()"> Will share food even when saying "I'm not hungry".</li>
+        <li><input type="checkbox" class="agree-check" onchange="checkContract()"> Promises to remain my best friend forever!</li>
+      </ul>
+      <button class="btn" id="certBtn" disabled onclick="showCertificate()">Claim Bestie Certificate 🏆</button>
+    </div>
+
+    <!-- Cake Cutting -->
+    <div class="card">
+      <h2>🎂 Virtual Cake Cutting</h2>
+      <p>Click on the cake below to cut it & unlock your wish!</p>
+      <div class="cake-container" onclick="cutCake()">
+        <div class="cake-emoji" id="cake">🎂</div>
+      </div>
+      <div id="wishBox" class="hidden-wish">
+        🎉 <strong>HAPPY BIRTHDAY!</strong> <br>
+        May your year be full of less drama, more food, and endless laughing fits with me! Thank you for being such an awesome friend. Enjoy your day to the fullest! 🥳✨
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function updateMeter() {
+      const val = document.getElementById('annoySlider').value;
+      const res = document.getElementById('meterResult');
+      if (val < 30) {
+        res.innerText = `Status: Unbelievably Nice (${val}%) - Suspicious! 🤨`;
+      } else if (val < 70) {
+        res.innerText = `Status: Moderately Drama Queen (${val}%) 💁‍♀️`;
+      } else {
+        res.innerText = `Status: MAXIMUM CHAOS DANGER ZONE! (${val}%) 💥`;
+      }
+    }
+
+    const facts = [
+      "Fact: You spend 45 minutes deciding what to eat and then order momos.",
+      "Fact: You say '5 mins me pauch rahi hu' when you haven't even taken a shower.",
+      "Fact: 90% of our conversations are just laughing at things that aren't even funny.",
+      "Fact: Having me as your best friend is genuinely the biggest gift of your life."
+    ];
+
+    function generateFact() {
+      const randomFact = facts[Math.floor(Math.random() * facts.length)];
+      document.getElementById('factBox').innerText = randomFact;
+    }
+
+    function checkContract() {
+      const checkboxes = document.querySelectorAll('.agree-check');
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+      document.getElementById('certBtn').disabled = !allChecked;
+    }
+
+    function showCertificate() {
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      alert("🏆 OFFICIAL CERTIFICATE UNLOCKED:\n\nYou are officially certified as the Best & Most Tolerated Friend of the Year! 🎉");
+    }
+
+    function cutCake() {
+      document.getElementById('cake').innerText = '🍰🎈';
+      document.getElementById('wishBox').style.display = 'block';
+      confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 } });
+    }
+  </script>
+  <script>
+document.getElementById("bestiePasswordForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const password = document.getElementById("bestiePassword").value;
+  const error = document.getElementById("bestiePasswordError");
+  const lock = document.getElementById("bestieLock");
+
+  if (password === "1210") {
+    lock.remove();
+  } else {
+    error.textContent = "Wrong password, bestie! 💗 Try again.";
+  }
+});
+</script>
+<!-- ===== ADDITIONS START ===== -->
+<style>
+.lock-photos { display: flex; justify-content: center; gap: 10px; margin: 10px 0 16px; flex-wrap: wrap; }
+.lock-photos img { width: 70px; height: 70px; object-fit: cover; border-radius: 50%; border: 3px solid #ffd6e7; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.bouquet-modal { display: none; position: fixed; inset: 0; z-index: 100000; background: rgba(60,40,90,0.55); align-items: center; justify-content: center; padding: 20px; }
+.bouquet-modal.open { display: flex; }
+.bouquet-box { background: #fff; border-radius: 20px; padding: 25px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 18px 50px rgba(0,0,0,0.2); animation: bestiePop 0.4s ease both; }
+.bouquet-box h2 { color: #6c5ce7; margin-bottom: 12px; font-size: 1.4rem; }
+.bouquet-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.bouquet-photos img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; }
+.bouquet-close { margin-top: 16px; }
+</style>
+
+<!-- Song (website khulte hi lock ke saath play hoga) -->
+<audio id="bgSong" loop src="song.mp3"></audio>
+
+<!-- Bouquet popup -->
+<div id="bouquetModal" class="bouquet-modal">
+  <div class="bouquet-box">
+    <h2>Bestie Ka Special Bouquet 💐</h2>
+    <div class="bouquet-photos">
+      <img src="bouquet1.jpg" alt="Bouquet 1">
+      <img src="bouquet2.jpg" alt="Bouquet 2">
+    </div>
+    <p style="margin-top: 12px;">Tere liye, with love 💜</p>
+    <button class="btn bouquet-close" onclick="closeBouquet()">Close ✖</button>
+  </div>
+</div>
+
+<script>
+(function () {
+    const song = document.getElementById('bgSong');
+  const form = document.getElementById('bestiePasswordForm');
+  const pwdInput = document.getElementById('bestiePassword');
+
+  form.addEventListener('submit', function () {
+    if (pwdInput.value === '1210') {
+      song.play().catch(function () {});
+    }
+  });
+
+    document.getElementById('certBtn').addEventListener('click', function (e) {
+    e.stopImmediatePropagation();
+    document.getElementById('bouquetModal').classList.add('open');
+  }, true);
+
+  window.closeBouquet = function () {
+    document.getElementById('bouquetModal').classList.remove('open');
+  };
+})();
+</script>
+<!-- ===== ADDITIONS END ===== -->
+</body>
+</html>
